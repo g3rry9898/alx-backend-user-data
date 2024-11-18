@@ -67,28 +67,4 @@ def get_logger() -> logging.Logger:
     formatter = RedactingFormatter(fields=PII_FIELDS)
     stream_handler.setFormatter(formatter)
 
-    logger.addHandler(stream_handler)
-
-    return logger
-
-def get_db() -> connection.MySQLConnection:
-    """
-    Returns a connector to the database.
-    
-    Uses environment variables to obtain database credentials.
-    
-    Returns:
-        connection.MySQLConnection: Database connection object.
-    """
-    username = os.getenv('PERSONAL_DATA_DB_USERNAME', 'root')
-    password = os.getenv('PERSONAL_DATA_DB_PASSWORD', '')
-    host = os.getenv('PERSONAL_DATA_DB_HOST', 'localhost')
-    database = os.getenv('PERSONAL_DATA_DB_NAME')
-
-    return mysql.connector.connect(
-        user=username,
-        password=password,
-        host=host,
-        database=database
-    )
-
+    logger.addHandler(stream
