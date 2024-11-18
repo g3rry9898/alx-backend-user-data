@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-This module provides a Redacting Formatter for logging.
+This module provides a Redacting Formatter for logging and a logger setup.
 """
 
 import logging
-from typing import List
-import re
+from typing import List, Tuple
+
+PII_FIELDS: Tuple[str, ...] = ("name", "email", "phone", "ssn", "password")
 
 def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
     """
@@ -46,4 +47,24 @@ class RedactingFormatter(logging.Formatter):
             str: The formatted log record.
         """
         return filter_datum(self.fields, self.REDACTION, super().format(record), self.SEPARATOR)
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and returns a logger named 'user_data' with a StreamHandler
+    and RedactingFormatter.
+    
+    Returns:
+        logging.Logger: Configured logger.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
 
